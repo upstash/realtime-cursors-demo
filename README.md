@@ -1,4 +1,4 @@
-# Realtime Cursors
+# Realtime Cursors Demo
 
 See everyone's cursor position in real-time using Upstash Realtime.
 

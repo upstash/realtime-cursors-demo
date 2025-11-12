@@ -2,6 +2,7 @@
 
 import { useCursors } from "@/lib/use-cursors";
 import { Cursor } from "@/components/Cursor";
+import { CurrentCursor } from "@/components/CurrentCursor";
 
 export default function Home() {
   const { otherCursors, updateCursor, myId } = useCursors();
@@ -12,7 +13,7 @@ export default function Home() {
 
   return (
     <div
-      className="relative h-screen w-screen bg-zinc-50 dark:bg-zinc-900"
+      className="relative h-screen w-screen bg-zinc-50 dark:bg-zinc-900 cursor-none"
       onMouseMove={handleMouseMove}
     >
       <div className="absolute top-4 left-4 text-sm text-zinc-600 dark:text-zinc-400">
@@ -22,6 +23,7 @@ export default function Home() {
       {Object.values(otherCursors).map((cursor) => (
         <Cursor key={cursor.id} id={cursor.id} x={cursor.x} y={cursor.y} />
       ))}
+      <CurrentCursor id={myId} />
     </div>
   );
 }

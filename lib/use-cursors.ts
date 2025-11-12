@@ -20,24 +20,17 @@ export function useCursors() {
   const pendingPositions = useRef<{ x: number; y: number; t: number }[]>([]);
   const batchStartTime = useRef<number>(0);
 
-  // Generate username only on client
   useEffect(() => {
-    if (!myId.current) {
-      myId.current = generateUsername();
-    }
+    if (!myId.current) myId.current = generateUsername();
   }, []);
 
   // Listen for cursor updates
   useRealtime<RealtimeEvents>({
     event: "update",
-    channels: ["default"],
     onData(data) {
-      // Early return if this is our own cursor or no positions
-      if (data.id === myId.current || data.positions.length === 0) {
-        return;
-      }
+      if (data.id === myId.current || data.positions.length === 0) return;
 
-      // Smooth interpolation through positions using RAF
+      // Replay the recording
       const startTime = performance.now();
       const totalDuration = data.positions[data.positions.length - 1].t;
 
@@ -65,9 +58,7 @@ export function useCursors() {
           },
         }));
 
-        if (elapsed < totalDuration) {
-          requestAnimationFrame(animate);
-        }
+        if (elapsed < totalDuration) requestAnimationFrame(animate);
       };
 
       requestAnimationFrame(animate);
@@ -77,10 +68,7 @@ export function useCursors() {
   // Batch and send cursor updates
   useEffect(() => {
     const interval = setInterval(() => {
-      // Early return if no pending positions
-      if (pendingPositions.current.length === 0) {
-        return;
-      }
+      if (pendingPositions.current.length === 0) return;
 
       fetch("/api/cursor", {
         method: "POST",

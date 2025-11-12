@@ -2,10 +2,7 @@ import { Realtime, InferRealtimeEvents } from "@upstash/realtime";
 import { Redis } from "@upstash/redis";
 import { z } from "zod";
 
-const redis = new Redis({
-  url: process.env.UPSTASH_REDIS_REST_URL!,
-  token: process.env.UPSTASH_REDIS_REST_TOKEN!,
-});
+const redis = Redis.fromEnv();
 
 const schema = {
   update: z.object({
@@ -23,7 +20,6 @@ const schema = {
 export const realtime = new Realtime({
   schema,
   redis,
-  // verbose: true,
 });
 
 export type RealtimeEvents = InferRealtimeEvents<typeof realtime>;
